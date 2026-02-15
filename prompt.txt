@@ -1,0 +1,593 @@
+1. 1st Prompt: 
+--------------
+
+Act as a principal software architect.
+
+Based on the provided folder screenshot, redesign the project into a clean, minimal, scalable MVP structure for:
+
+Adaptive Interview AI
+Stack:
+- React
+- Node.js
+- Express
+- MySQL
+- Prisma
+- OpenAI API
+
+Constraints:
+- No unnecessary folders
+- No microservices
+- No Docker
+- No CI/CD
+- No testing folders (for MVP)
+- No code generation
+- Only folder structure
+
+Return only the final folder tree.
+No explanations.
+
+
+
+2. 2nd Prompt: 
+--------------
+
+You are a senior Node.js backend engineer.
+
+Generate complete backend code for an AI-powered Adaptive Mock Interview platform.
+
+Stack:
+- Node.js
+- Express
+- MySQL (mysql2)
+- OpenAI API
+- No ORM
+- Clean MVC architecture
+
+Folder structure already exists:
+- controllers/
+- services/
+- models/
+- routes/
+- middleware/
+- config/db.js
+- app.js
+- server.js
+
+Database rules:
+- Every table includes:
+  id (PK)
+  created_at
+  updated_at
+  status ENUM('active','inactive','deleted') DEFAULT 'active'
+
+Core Requirements:
+
+1. Authentication:
+   - Register
+   - Login (JWT)
+
+2. Interview Flow:
+   - POST /api/interview/start
+   - POST /api/interview/answer
+   - GET /api/interview/report/:sessionId
+   - GET /api/interview/history
+
+3. Adaptive AI logic:
+   - Generate first question based on role + difficulty
+   - Evaluate answer (0–100 score)
+   - Adjust difficulty dynamically
+   - Trigger at least 1 intelligent follow-up per session
+   - End interview after fixed question count or duration
+   - Generate structured performance report:
+        - overall_score
+        - 3 strengths
+        - 3 improvements
+        - 2 improved sample answers
+        - suggested next topics
+
+4. Store:
+   - Session data
+   - Questions
+   - Scores
+   - Report JSON fields
+
+5. Keep strict separation:
+   - Controllers → req/res only
+   - Services → business logic
+   - openaiService → AI prompts
+   - Models → raw SQL queries only
+   - No business logic in controllers
+
+6. Include:
+   - Proper async/await
+   - Error handling middleware
+   - Clean modular structure
+   - Environment config
+   - JWT auth middleware
+   - MySQL connection pool
+
+Generate:
+- All backend files
+- Clean production-ready code
+- Proper comments
+- Structured and readable implementation
+
+Do not generate frontend.
+Do not explain.
+Only output backend code file-by-file.
+
+
+
+3. 3rd Prompt: 
+--------------
+You are a senior Node.js backend refactoring expert.
+
+We are building an AI-powered Adaptive Mock Interview platform using:
+
+- Node.js
+- Express
+- MySQL (mysql2)
+- OpenAI API
+- No ORM
+
+Current structure contains a `models/` folder with raw SQL queries.
+
+Refactor requirements:
+
+1. Delete the entire `models/` folder.
+2. Move all database query logic into respective service files.
+3. Each service should:
+   - Contain business logic
+   - Contain MySQL queries
+   - Use async/await
+   - Use mysql2 connection pool
+   - Use ONLY parameterized queries (no string concatenation)
+   - Prevent SQL injection completely
+
+4. Keep controllers clean:
+   - Controllers must NOT contain SQL queries.
+   - Controllers should only:
+       - Extract request data
+       - Call service
+       - Return response
+
+5. Maintain clean structure:
+   - interviewService.js handles:
+       - interview session creation
+       - saving questions
+       - updating scores
+       - fetching history
+   - openaiService.js handles:
+       - AI prompts
+       - evaluation logic
+   - authService.js handles:
+       - user registration
+       - login queries
+       - password hashing
+
+6. Ensure:
+   - All queries use `?` placeholders
+   - No raw user input is directly embedded in SQL
+   - Proper error handling
+   - Transactions are used where needed (e.g., interview completion + report save)
+
+7. Do NOT modify routes.
+8. Do NOT modify folder structure except deleting `models/`.
+9. Generate updated service files completely.
+10. Do not explain. Only output updated files.
+
+Focus on security, clean architecture, and hackathon-ready production quality.
+
+
+
+4. 4th Prompt: 
+--------------
+
+We have an empty .env file.
+
+Project stack:
+- Node.js
+- Express
+- MySQL (mysql2)
+- JWT
+- OpenAI API
+- No ORM
+
+Generate:
+
+1. Required environment variables for:
+   - Server (PORT)
+   - MySQL connection
+   - JWT secret + expiry
+   - OpenAI API key
+   - Interview config (max questions)
+
+2. Update config/db.js to use process.env variables.
+3. Use dotenv.
+4. Do not hardcode credentials.
+5. Output:
+   - .env.example content
+   - Updated db.js file
+Only output code.
+
+
+
+5. 5th Prompt: 
+--------------
+
+You are a senior frontend architect and UI engineer.
+
+Generate a complete modern, production-ready React frontend for an AI-powered Adaptive Mock Interview platform.
+
+Stack Requirements:
+- React (Vite preferred)
+- Axios
+- React Router v6
+- Redux Toolkit
+- Modern UI library (MUI or Tailwind + shadcn-style components)
+- Functional components + hooks
+- Clean modular architecture
+
+Backend endpoints already exist.
+
+-------------------------------------------------
+CORE FEATURES
+-------------------------------------------------
+
+1️⃣ Authentication:
+- Register
+- Login
+- JWT stored securely in localStorage
+- Proper protected routes
+- Auto logout on token expiry
+
+2️⃣ Dashboard:
+- Modern card-based UI
+- Role selection dropdown
+- Difficulty selection dropdown
+- Interview type selection
+- Duration selector
+- Start Interview button
+- Interview history table
+- Analytics summary section:
+    - Total interviews
+    - Average score
+    - Highest score
+    - Improvement trend chart
+
+3️⃣ Interview Page:
+- Large question card
+- Live countdown timer
+- Progress tracker (Question X of Y)
+- Smooth loading transitions
+- Textarea for answer
+- Voice-based answer option:
+    - Use Web Speech API (SpeechRecognition)
+    - Start/Stop recording button
+    - Auto-fill textarea from voice
+- Auto-submit when timer hits 0
+- Disable submit during API call
+- Show follow-up indicator when applicable
+
+4️⃣ Feedback Page:
+- Modern report layout
+- Circular progress score indicator
+- Strengths (styled cards)
+- Improvements (styled cards)
+- Improved sample answers section
+- Suggested next practice topics
+- Button to retry interview
+
+5️⃣ Analytics Dashboard:
+- Charts using Chart.js or Recharts
+- Score history graph
+- Difficulty distribution chart
+- Performance improvement over time
+
+-------------------------------------------------
+ARCHITECTURE REQUIREMENTS
+-------------------------------------------------
+
+- Use reusable UI components
+- Pages handle layout only
+- API calls inside src/api/
+- Redux slices:
+    - authSlice
+    - interviewSlice
+    - analyticsSlice
+- Axios interceptor for JWT token
+- Centralized error handling
+- Clean folder structure (do not modify existing structure)
+- Responsive design (mobile friendly)
+- Modern animations (subtle transitions)
+
+-------------------------------------------------
+SECURITY
+-------------------------------------------------
+
+- Proper route guards
+- Redirect unauthenticated users
+- Hide protected routes
+- Do not expose API keys
+
+-------------------------------------------------
+TIMER LOGIC
+-------------------------------------------------
+
+- Countdown based on interview duration
+- Auto-submit answer when timer ends
+- Clear interval on unmount
+- Persist timer state if page refresh (optional bonus)
+
+-------------------------------------------------
+OUTPUT RULES
+-------------------------------------------------
+
+- Generate full frontend code file-by-file
+- Do not explain anything
+- Use modern UI components
+- Make it visually impressive
+- Production-ready structure
+
+
+
+6. 6th Prompt:
+---------------
+
+You are a senior Node.js backend architect.
+
+We want to refactor the project to store sensitive configuration values inside the database instead of .env.
+
+Remove these from .env usage:
+- JWT_SECRET
+- OPENAI_API_KEY
+- GOOGLE_GEMINI_API_KEY
+
+Instead:
+
+1. Create a database table named `master_constant` with columns:
+   - id (PK)
+   - constant_key (unique)
+   - constant_value
+   - created_at
+   - updated_at
+   - status ENUM('active','inactive','deleted') DEFAULT 'active'
+
+2. Insert records for:
+   - JWT_SECRET
+   - OPENAI_API_KEY
+   - GOOGLE_GEMINI_API_KEY
+
+3. Create a utility file:
+   utils/constantLoader.js
+
+   This utility should:
+   - Fetch constant_value by constant_key
+   - Cache values in memory after first load
+   - Return value safely
+   - Throw error if key not found
+   - Use parameterized query (prevent SQL injection)
+
+4. Refactor:
+   - authService.js → use constantLoader to get JWT_SECRET
+   - openaiService.js → use constantLoader to get OPENAI_API_KEY and GOOGLE_GEMINI_API_KEY
+   - Remove direct usage of process.env for these secrets
+
+5. Ensure:
+   - No hardcoded secrets anywhere
+   - No secrets logged to console
+   - Use async/await
+   - Clean modular implementation
+   - Do not modify unrelated files
+
+6. Output:
+   - SQL table creation query
+   - SQL insert statements
+   - constantLoader.js
+   - Updated authService.js
+   - Updated openaiService.js
+
+Do not explain anything.
+Output only updated code files.
+Ensure secure implementation.
+
+
+
+7. 7th Prompt:
+---------------
+
+You are a senior Node.js AI integration engineer.
+
+We are integrating Google Gemini API using:
+
+- Node.js
+- @google/generative-ai package
+- API key stored in database (master_constant)
+- Provider selection via AI_PROVIDER constant
+
+Current issue:
+We are getting 404 model not found error for:
+models/gemini-1.5-flash
+
+Your task:
+
+--------------------------------------------------
+1️⃣ Fix Gemini Integration Properly
+--------------------------------------------------
+
+- Use latest correct SDK usage for @google/generative-ai.
+- Use a valid model name supported for generateContent.
+- Ensure compatibility with current API version.
+- Do NOT use deprecated endpoints.
+
+--------------------------------------------------
+2️⃣ Correct Implementation Requirements
+--------------------------------------------------
+
+In openaiService.js:
+
+- Fetch GOOGLE_GEMINI_API_KEY using constantLoader.
+- Initialize GoogleGenerativeAI correctly.
+- Use supported model (for example: "gemini-1.5-flash" OR correct current stable model).
+- Use model.generateContent() properly.
+- Extract text response safely.
+
+--------------------------------------------------
+3️⃣ Error Handling
+--------------------------------------------------
+
+- If model not found → throw clean error:
+  "Gemini model configuration error."
+- If API key invalid → throw:
+  "Gemini authentication failed."
+- Do not expose raw SDK stack trace.
+- Use centralized error handler.
+
+--------------------------------------------------
+4️⃣ Clean Structure
+--------------------------------------------------
+
+- No hardcoded API keys
+- No hardcoded provider names
+- Async/await
+- Clean try/catch
+- Return structured result to interviewService
+
+--------------------------------------------------
+5️⃣ Output
+--------------------------------------------------
+
+- Updated openaiService.js
+- Any required helper adjustments
+- Do not explain
+- Output only updated files
+- Production-safe implementation
+
+
+8. 8th Prompt:
+----------------
+
+You are a senior Node.js backend architect.
+
+We want to completely remove OpenAI and provider switching logic.
+For now, the system must use ONLY Google Gemini.
+
+Current setup:
+- Node.js (Express)
+- GOOGLE_GEMINI_API_KEY stored in MySQL table: master_constant
+- constantLoader utility exists
+- We are currently using axios for Gemini API calls
+
+Your task is to refactor openaiService.js into a clean, production-ready Gemini-only service.
+
+--------------------------------------------------
+REQUIREMENTS
+--------------------------------------------------
+
+1️⃣ Remove Everything Related To:
+- OpenAI
+- AI_PROVIDER
+- Provider switching
+- Global initialized flag
+- openaiClient
+- currentProvider
+- selectedModel global variables
+
+--------------------------------------------------
+
+2️⃣ Gemini Initialization
+--------------------------------------------------
+
+- Fetch GOOGLE_GEMINI_API_KEY dynamically using constantLoader
+- Validate key exists and is not empty
+- Trim whitespace
+- If missing → throw:
+  "Gemini API key not configured."
+  errorCode: "GEMINI_KEY_MISSING"
+
+--------------------------------------------------
+
+3️⃣ Model Configuration
+--------------------------------------------------
+
+- Do NOT hardcode model
+- Fetch GEMINI_MODEL from master_constant
+- If missing → default to:
+  "gemini-1.5-flash"
+
+--------------------------------------------------
+
+4️⃣ Safe Axios Call
+--------------------------------------------------
+
+- Use endpoint:
+  https://generativelanguage.googleapis.com/v1/models/{model}:generateContent
+- Send request body properly formatted
+- Add timeout: 10000ms
+- Use proper headers
+
+--------------------------------------------------
+
+5️⃣ Defensive Response Handling
+--------------------------------------------------
+
+- Safely extract:
+  response.data.candidates[0].content.parts[0].text
+- If structure invalid → throw:
+  "Invalid Gemini response format."
+
+--------------------------------------------------
+
+6️⃣ Proper Error Handling
+--------------------------------------------------
+
+Map errors as:
+
+401 or 403 → "Gemini authentication failed."
+429 → "Gemini rate limit exceeded."
+404 → "Gemini model not found."
+Timeout → "Gemini request timed out."
+Default → "Gemini service error."
+
+Never expose raw stack trace.
+
+Return structured error:
+{
+  success: false,
+  message,
+  errorCode
+}
+
+--------------------------------------------------
+
+7️⃣ JSON Safe Parsing
+--------------------------------------------------
+
+For evaluation/report methods:
+
+- Implement safe JSON extraction
+- If JSON.parse fails:
+    extract JSON block using regex
+- If still fails:
+    throw:
+    "Invalid AI response format."
+
+--------------------------------------------------
+
+8️⃣ Clean Code Structure
+--------------------------------------------------
+
+- No global mutable state
+- No provider logic
+- No unnecessary console logs
+- Async/await only
+- Clean modular functions
+
+--------------------------------------------------
+
+9️⃣ Output
+--------------------------------------------------
+
+- Output full updated GeminiService.js
+- Do not explain
+- Production-ready implementation
